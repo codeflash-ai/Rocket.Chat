@@ -1,3 +1,6 @@
+const MS_PER_DAY = 86400000;
+const MS_PER_HOUR = 3600000;
+const MS_PER_MINUTE = 60000;
 export enum TIMEUNIT {
 	days = 'days',
 	hours = 'hours',
@@ -5,15 +8,8 @@ export enum TIMEUNIT {
 }
 
 export const isValidTimespan = (timespan: number): boolean => {
-	if (Number.isNaN(timespan)) {
-		return false;
-	}
-
-	if (!Number.isFinite(timespan)) {
-		return false;
-	}
-
-	if (timespan < 0) {
+	// Number.isFinite returns false for NaN, so we can skip the separate NaN check
+	if (!Number.isFinite(timespan) || timespan < 0) {
 		return false;
 	}
 
@@ -47,11 +43,11 @@ export const msToTimeUnit = (unit: TIMEUNIT, timespan: number) => {
 
 	switch (unit) {
 		case TIMEUNIT.days:
-			return timespan / 24 / 60 / 60 / 1000;
+			return timespan / MS_PER_DAY;
 		case TIMEUNIT.hours:
-			return timespan / 60 / 60 / 1000;
+			return timespan / MS_PER_HOUR;
 		case TIMEUNIT.minutes:
-			return timespan / 60 / 1000;
+			return timespan / MS_PER_MINUTE;
 		default:
 			throw new Error('msToTimeUnit - invalid time unit');
 	}
