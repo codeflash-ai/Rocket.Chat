@@ -5,11 +5,18 @@ export enum TIMEUNIT {
 }
 
 export const isValidTimespan = (timespan: number): boolean => {
-	if (Number.isNaN(timespan)) {
+	// Fast-path type check to preserve original Number.isFinite behavior for non-number inputs
+	if (typeof timespan !== 'number') {
 		return false;
 	}
 
-	if (!Number.isFinite(timespan)) {
+	// NaN check without calling Number.isNaN
+	if (timespan !== timespan) {
+		return false;
+	}
+
+	// Infinity checks without calling Number.isFinite
+	if (timespan === Infinity || timespan === -Infinity) {
 		return false;
 	}
 
